@@ -1,0 +1,22 @@
+{
+  "name": "sails-resource",
+  "version": "0.1.0",
+  "main": "./src/sailsResource.js",
+  "contributors": [
+    "Martin Jantošovič <jantosovic.martin@gmail.com> (http://freya.sk)"
+  ],
+  "ignore": [
+    "**/.*",
+    "bower_components",
+    "spec",
+    "package.json"
+  ],
+  "dependencies": {
+    "angular": "~1.3.4",
+    "eventEmitter": "~4.2.9",
+    "angularSails": "~0.10.0"
+  },
+  "resolutions": {
+    "angular": "~1.3.4"
+  }
+}

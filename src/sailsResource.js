@@ -554,9 +554,15 @@
           }
 
           function Resource(value, addToCache) {
-            shallowClearAndCopy(value || {}, this);
-            if (addToCache === true && value.id) {
-              cache[value.id] = this;
+            if (typeof value == 'number') {
+              // When used as new Resource(5) - load resource from database
+              // good for loading associations
+              this.$findOne({ id: value });
+            } else {
+              shallowClearAndCopy(value || {}, this);
+              if (addToCache === true && value.id) {
+                cache[value.id] = this;
+              }
             }
 
             this.$ee = new EventEmitter();
@@ -719,13 +725,13 @@
                 },
                 responseErrorInterceptor);
 
+              // always set the promise
+              value.$promise = promise;
+              value.$resolved = false;
+
               if (!isInstanceCall) {
                 // we are creating instance / collection
-                // - set the initial promise
-                // - return the instance / collection
-                value.$promise = promise;
-                value.$resolved = false;
-
+                // return the instance / collection
                 return value;
               }
 

@@ -823,7 +823,26 @@
             forEach(cache, function (cacheItem, key) {
               if (angular.isArray(cacheItem)) {
                 // Load new data from server
-                promises.push(Resource.find(JSON.parse(key)).$promise);
+                var promise = Resource.find(JSON.parse(key)).$promise;
+
+                promise = promise.then(function(reloaded) {
+                  // Copy items to original array
+                  while(cacheItem.pop()) {}
+                  forEach(reloaded, function(item) {
+                    cacheItem.push(item);
+                  });
+                  cacheItem.$resolved = true;
+
+                  // Leave original cacheItem in the cache
+                  cache[key] = cacheItem;
+
+                  return cacheItem;
+                });
+
+                cacheItem.$promise = promise;
+                cacheItem.$resolved = false;
+
+                promises.push(promise);
               }
             });
             return promises;

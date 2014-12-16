@@ -754,7 +754,7 @@
               }
 
               if (this.id) {
-                return this.$update(extend(params, { id: this.id }), success, error);
+                return this.$update(extend(params || {}, { id: this.id }), success, error);
               } else {
                 return this.$create(params, success, error);
               }

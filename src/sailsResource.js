@@ -554,7 +554,7 @@
           }
 
           function Resource(value, addToCache) {
-            if (typeof value == 'number') {
+            if (typeof value === 'number' || typeof value === 'string') {
               // When used as new Resource(5) - load resource from database
               // good for loading associations
               this.$findOne({ id: value });

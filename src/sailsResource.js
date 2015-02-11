@@ -648,12 +648,31 @@
                 undefined;
 
               forEach(action, function (value, key) {
-                if (key != 'params' && key != 'isArray' && key != 'interceptor') {
+                if (key != 'params' && key != 'isArray' && key != 'interceptor' && key != 'data') {
                   httpConfig[key] = copy(value);
                 }
               });
 
-              if (hasBody) httpConfig.data = data;
+              if (hasBody) {
+                // Copy only keys from action.data.only array
+                if (action.data && action.data.only) {
+                  if (angular.isArray(action.data.only)) {
+                    httpConfig.data = {};
+                    forEach(action.data.only, function (value) {
+                      httpConfig.data[value] = data[value]
+                    });
+                  } else if (isFunction(action.data.only)) {
+                    httpConfig.data = action.data.only(data);
+                  } else {
+                    throw $resourceMinErr('badcfg',
+                      'Error in resource configuration for action `{0}`. Only arrays or functions ' +
+                      'are allowed in `data.only` config. ', name);
+                  }
+                } else {
+                  // Send whole object
+                  httpConfig.data = data;
+                }
+              }
               route.setUrlParams(httpConfig, urlParams, action.url);
 
               var promise = $sailsSocket(httpConfig).then(function (response) {
